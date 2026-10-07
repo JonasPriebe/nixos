@@ -39,6 +39,15 @@ in
     options = "--delete-older-than 30d";
   };
 
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+  };
+
+  virtualisation.docker.daemon.settings = {
+    data-root = "/home/bob/.local/share/docker";
+  };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -88,6 +97,7 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     packages = with pkgs; [ ];
   };
@@ -104,13 +114,24 @@ in
     wl-clipboard
     mako
     ghostty
-    thunar
+    libopenraw
+    tumbler
     btop
+    cifs-utils
+    eddie
+    file-roller
+    obsidian
+    mpv
+    gimp
+    jellyfin-mpv-shim
+    pandoc
 
     # Helix Stuff
     helix
     nil
     rust-analyzer
+    marksman
+    deno
     lldb
     clang-tools
     python3
@@ -129,27 +150,60 @@ in
     fuzzel
     waybar
     swaylock
+    slurp
 
     # Application
     vesktop
     bitwarden-desktop
     signal-desktop
-    winboat
+    docker
+    docker-compose
+    darktable
 
   ];
+
+  programs.thunar.enable = true;
+  programs.xfconf.enable = true;
+  services.tumbler.enable = true;
+
+  # Add the archive plugin and an archive manager backend (e.g., file-roller or ark)
+  programs.thunar.plugins = with pkgs.xfce; [
+    thunar-archive-plugin
+    thunar-volman
+  ];
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-40.10.5"
+  ];
+
+  services.gvfs.enable = true;
 
   services.tailscale = {
     enable = true;
   };
+
   services.gnome.gnome-keyring.enable = true;
-  services.blueman.enable = true;
 
-  services.xserver.enable = false;
+  security.polkit.enable = true;
 
-  programs.sway = {
-    enable = true;
-    wrapperFeatures.gtk = true;
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    description = "polkit-gnome-authentication-agent-1";
+    wantedBy = [ "graphical-session.target" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
+    };
   };
+
+  services.blueman.enable = true;
+  services.xserver.enable = false;
+  services.power-profiles-daemon.enable = true;
+  services.udisks2.enable = true;
 
   services.displayManager.ly = {
     enable = true;
@@ -162,10 +216,25 @@ in
     nerd-fonts.mononoki
   ];
 
-  services.power-profiles-daemon.enable = true;
-
-  programs.thunar = {
+  programs.sway = {
     enable = true;
+    wrapperFeatures.gtk = true;
+  };
+
+  services.sunshine = {
+    enable = true;
+    autoStart = false;
+    capSysAdmin = true; # only needed for Wayland -- omit this when using with Xorg
+    openFirewall = true;
+
+  };
+
+  systemd.user.services.sunshine = {
+
+    environment = {
+      WAYLAND_DISPLAY = "wayland-1";
+      XDG_RUNTIME_DIR = "/run/user/1000";
+    };
   };
 
   programs.firefox = {
@@ -219,11 +288,6 @@ in
     enable = true;
     powerOnBoot = false;
   };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
 
   system.stateVersion = "26.05"; # Did you read the comment?
 }

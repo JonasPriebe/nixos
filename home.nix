@@ -14,6 +14,21 @@
     '';
   };
 
+  services.mpd = {
+    enable = true;
+    musicDirectory = "/home/bob/music";
+    extraConfig = ''
+      audio_output {
+        type "pipewire"
+        name "PipeWire Sound Server"
+      }
+    '';
+  };
+
+  # systemd.services.mpd.environment = {
+  #   XDG_RUNTIME_DIR = "/run/user/${toString 1000}"; # User-id must match above user. MPD will look inside this directory for the PipeWire socket.
+  # };
+
   programs.helix = {
     enable = true;
     defaultEditor = true;
@@ -42,9 +57,12 @@
           ];
         };
         normal = {
+          ";" = "keep_primary_selection";
+          "," = "collapse_selection";
           esc = "save_selection";
           space = {
             w = [
+              ":format"
               ":w"
             ];
             q = ":q";
@@ -73,6 +91,19 @@
             args = [ ];
           };
         }
+        {
+          name = "markdown";
+          auto-format = true;
+          formatter = {
+            command = "deno";
+            args = [
+              "fmt"
+              "-"
+              "--ext"
+              "md"
+            ];
+          };
+        }
       ];
 
       language-server = {
@@ -84,21 +115,6 @@
     };
   };
 
-
-  programs.obsidian = {
-    enable = true;
-
-    vaults.notes.target = "Documents/Obsidian";
-
-    defaultSettings.app = {
-      alwaysUpdateLinks = true;
-      spellcheck = true;
-      vimMode = true;
-    };
-  };
-
-
-  
   services.swayidle =
     let
       lock = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
@@ -141,11 +157,26 @@
       ];
     };
 
+  services.udiskie = {
+    enable = true;
+    settings = {
+      # workaround for
+      # https://github.com/nix-community/home-manager/issues/632
+      program_options = {
+        # replace with your favorite file manager
+        file_manager = "${pkgs.thunar}/bin/thunar";
+      };
+    };
+  };
+
   home.packages = with pkgs; [
     bat
     steel
     schemat
     mitscheme
+    git
+    tig
+    rmpc
   ];
 
 }
