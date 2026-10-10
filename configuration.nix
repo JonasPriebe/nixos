@@ -8,23 +8,11 @@
   lib,
   ...
 }:
-let
-  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz";
-in
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    (import "${home-manager}/nixos")
+    <home-manager/nixos>
   ];
-
-  services.logind = {
-    settings.Login = {
-      HandleLidSwitch = "suspend";
-      HandleLidSwitchExternalPower = "suspend";
-    };
-  };
-
   # Home manager
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
@@ -39,56 +27,84 @@ in
     options = "--delete-older-than 30d";
   };
 
-  # Docker
-  virtualisation.docker = {
-    enable = true;
+  # Samba mount
+  fileSystems."/mnt/unraid" = {
+    device = "//tower/data";
+    fsType = "cifs";
+    options =
+      let
+        # this line prevents hanging on network split
+        automount_opts = "x-systemd.automount,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+
+      in
+      [
+        "${automount_opts},credentials=/etc/nixos/smb-secrets"
+        "nofail"
+      ];
   };
 
-  virtualisation.docker.daemon.settings = {
-    data-root = "/home/bob/.local/share/docker";
+  # Docker
+  virtualisation = {
+    docker = {
+      enable = true;
+      daemon.settings = {
+        data-root = "/home/bob/.local/share/docker";
+      };
+    };
   };
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.initrd.luks.devices."luks-0ae55978-0834-4aa1-9f28-cc0cd319a9ad".device =
-    "/dev/disk/by-uuid/0ae55978-0834-4aa1-9f28-cc0cd319a9ad";
-  networking.hostName = "nixos"; # Define your hostname.
-  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
-
-  # Enable networking
-  networking.networkmanager = {
-    enable = true;
-    wifi.powersave = true;
+  boot = {
+    kernelParams = [
+      "amdgpu.ppfeaturemask=0xffffffff"
+    ];
+    loader = {
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 3;
+        extraEntries = {
+          "windows.conf" = ''
+            title Windows
+            efi /EFI/Microsoft/Boot/bootmgfw.efi
+          '';
+        };
+      };
+      efi.canTouchEfiVariables = true;
+    };
   };
+
+  networking = {
+    hostName = "nixbox";
+    networkmanager = {
+      enable = true;
+    };
+  };
+
+  systemd.services.NetworkManager-wait-online.enable = false;
 
   # Set your time zone.
-  time.timeZone = "Europe/Berlin";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT = "de_DE.UTF-8";
-    LC_MONETARY = "de_DE.UTF-8";
-    LC_NAME = "de_DE.UTF-8";
-    LC_NUMERIC = "de_DE.UTF-8";
-    LC_PAPER = "de_DE.UTF-8";
-    LC_TELEPHONE = "de_DE.UTF-8";
-    LC_TIME = "de_DE.UTF-8";
+  time = {
+    timeZone = "Europe/Berlin";
   };
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "de";
-    variant = "nodeadkeys";
+  # Select internationalisation properties.
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "de_DE.UTF-8";
+      LC_IDENTIFICATION = "de_DE.UTF-8";
+      LC_MEASUREMENT = "de_DE.UTF-8";
+      LC_MONETARY = "de_DE.UTF-8";
+      LC_NAME = "de_DE.UTF-8";
+      LC_NUMERIC = "de_DE.UTF-8";
+      LC_PAPER = "de_DE.UTF-8";
+      LC_TELEPHONE = "de_DE.UTF-8";
+      LC_TIME = "de_DE.UTF-8";
+    };
   };
 
   # Configure console keymap
-  console.keyMap = "de-latin1-nodeadkeys";
+  console.keyMap = "us";
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."bob" = {
@@ -103,7 +119,19 @@ in
   };
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      permittedInsecurePackages = [
+        "electron-40.10.5"
+      ];
+    };
+  };
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -112,7 +140,6 @@ in
     vim
     wget
     wl-clipboard
-    mako
     ghostty
     libopenraw
     tumbler
@@ -128,7 +155,6 @@ in
 
     # Helix Stuff
     helix
-    nil
     rust-analyzer
     marksman
     deno
@@ -151,6 +177,9 @@ in
     waybar
     swaylock
     slurp
+    mako
+    xwayland
+    xrandr
 
     # Application
     vesktop
@@ -160,81 +189,20 @@ in
     docker-compose
     darktable
 
+    # 3D Printing
+    prusa-slicer
   ];
 
-  programs.thunar.enable = true;
+  # programs
+  programs.thunar = {
+    enable = true;
+  };
+
   programs.xfconf.enable = true;
-  services.tumbler.enable = true;
-
-  # Add the archive plugin and an archive manager backend (e.g., file-roller or ark)
-  programs.thunar.plugins = with pkgs.xfce; [
-    thunar-archive-plugin
-    thunar-volman
-  ];
-
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-40.10.5"
-  ];
-
-  services.gvfs.enable = true;
-
-  services.tailscale = {
-    enable = true;
-  };
-
-  services.gnome.gnome-keyring.enable = true;
-
-  security.polkit.enable = true;
-
-  systemd.user.services.polkit-gnome-authentication-agent-1 = {
-    description = "polkit-gnome-authentication-agent-1";
-    wantedBy = [ "graphical-session.target" ];
-    wants = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
-    };
-  };
-
-  services.blueman.enable = true;
-  services.xserver.enable = false;
-  services.power-profiles-daemon.enable = true;
-  services.udisks2.enable = true;
-
-  services.displayManager.ly = {
-    enable = true;
-    settings = {
-      session_log = "/tmp/ly-session.log";
-    };
-  };
-
-  fonts.packages = with pkgs; [
-    nerd-fonts.mononoki
-  ];
 
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
-  };
-
-  services.sunshine = {
-    enable = true;
-    autoStart = false;
-    capSysAdmin = true; # only needed for Wayland -- omit this when using with Xorg
-    openFirewall = true;
-
-  };
-
-  systemd.user.services.sunshine = {
-
-    environment = {
-      WAYLAND_DISPLAY = "wayland-1";
-      XDG_RUNTIME_DIR = "/run/user/1000";
-    };
   };
 
   programs.firefox = {
@@ -273,9 +241,57 @@ in
     };
   };
 
-  #Audio
+  # Add the archive plugin and an archive manager backend (e.g., file-roller or ark)
+  programs.thunar.plugins = with pkgs; [
+    thunar-archive-plugin
+    thunar-volman
+  ];
+
+  # Services
+
+  services.tumbler.enable = true;
+  services.gvfs.enable = true;
+
+  services.tailscale = {
+    enable = true;
+  };
+
+  services.lact.enable = true;
+
+  services.gnome.gnome-keyring.enable = true;
+
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "de";
+    variant = "nodeadkeys";
+  };
+
+  services.keyd = {
+    enable = true;
+
+    keyboards = {
+      default = {
+        ids = [ "*" ];
+
+        settings = {
+          main = {
+            capslock = "overload(control, esc)";
+          };
+        };
+      };
+    };
+  };
+
+  services.udisks2.enable = true;
+
+  services.displayManager.ly = {
+    enable = true;
+    settings = {
+      session_log = "/tmp/ly-session.log";
+    };
+  };
+
   services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
 
   services.pipewire = {
     enable = true;
@@ -284,10 +300,31 @@ in
     pulse.enable = true;
   };
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = false;
+  # security
+  security.polkit.enable = true;
+
+  security.rtkit.enable = true;
+
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    description = "polkit-gnome-authentication-agent-1";
+    wantedBy = [ "graphical-session.target" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
+    };
   };
 
+  fonts = {
+    packages = with pkgs; [
+      nerd-fonts.mononoki
+      jetbrains-mono
+    ];
+    fontconfig.defaultFonts.monospace = [ "Jetbrains Mono" ];
+  };
   system.stateVersion = "26.05"; # Did you read the comment?
 }

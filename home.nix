@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 {
   home.username = "bob";
   home.homeDirectory = "/home/bob";
@@ -14,22 +19,10 @@
     '';
   };
 
-  services.mpd = {
-    enable = true;
-    musicDirectory = "/home/bob/music";
-    extraConfig = ''
-      audio_output {
-        type "pipewire"
-        name "PipeWire Sound Server"
-      }
-    '';
-  };
-
-  # systemd.services.mpd.environment = {
-  #   XDG_RUNTIME_DIR = "/run/user/${toString 1000}"; # User-id must match above user. MPD will look inside this directory for the PipeWire socket.
-  # };
-
   programs.helix = {
+    extraPackages = [
+      pkgs.nixd
+    ];
     enable = true;
     defaultEditor = true;
     settings = {
@@ -39,6 +32,7 @@
         cursorline = true;
         color-modes = true;
         indent-heuristic = "tree-sitter";
+        auto-completion = true;
 
         cursor-shape = {
           insert = "bar";
@@ -78,6 +72,14 @@
     languages = {
       language = [
         {
+
+          name = "nix";
+          language-servers = [ "nixd" ];
+          auto-format = true;
+          formatter.command = lib.getExe pkgs.nixfmt-rfc-style;
+        }
+        {
+
           name = "scheme";
           language-servers = [ { name = "steel-language-server"; } ];
           indent = {
@@ -111,51 +113,27 @@
           command = "steel-language-server";
           args = [ ];
         };
+
+        nixd = {
+          command = "nixd";
+          config = {
+            nixd = {
+              nixpkgs.expr = "(import <nixpkgs> { }";
+
+              options = {
+                nixos.expr = "(import <nixpkgs/nixos> { configuration = /home/bob/nixos/configuration.nix; }).options";
+                home-manager.expr = "(import <home-manager/modules> { configuration = /home/bob/nixos/home.nix; pkgs = import <nixpkgs> {}; }).options";
+              };
+              formatting.command = [ "nixfmt" ];
+            };
+
+          };
+        };
+
       };
     };
-  };
 
-  services.swayidle =
-    let
-      lock = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
-      display = status: "${pkgs.sway}/bin/swaymsg 'output * power ${status}'";
-    in
-    {
-      enable = true;
-      timeouts = [
-        {
-          timeout = 120;
-          command = lock;
-        }
-        {
-          timeout = 140;
-          command = display "off";
-          resumeCommand = display "on";
-        }
-        {
-          timeout = 500;
-          command = "${pkgs.systemd}/bin/systemctl suspend";
-        }
-      ];
-      events = [
-        {
-          event = "before-sleep";
-          command = (display "off") + "; " + lock;
-        }
-        {
-          event = "after-resume";
-          command = display "on";
-        }
-        {
-          event = "lock";
-          command = (display "off") + "; " + lock;
-        }
-        {
-          event = "unlock";
-          command = display "on";
-        }
-      ];
-    };
+  };
 
   services.udiskie = {
     enable = true;
@@ -169,6 +147,17 @@
     };
   };
 
+  services.mpd = {
+    enable = true;
+    musicDirectory = "/home/bob/music";
+    extraConfig = ''
+      audio_output {
+        type "pipewire"
+        name "PipeWire Sound Server"
+      }
+    '';
+  };
+
   home.packages = with pkgs; [
     bat
     steel
@@ -178,5 +167,4 @@
     tig
     rmpc
   ];
-
 }
