@@ -10,8 +10,10 @@
 }:
 {
   imports = [
-    ./hardware-configuration.nix
     <home-manager/nixos>
+    ./hardware-configuration.nix
+    ./modules/wm/sway.nix
+    ./modules/apps/thunar.nix
   ];
   # Home manager
   home-manager.useUserPackages = true;
@@ -141,12 +143,10 @@
     wget
     wl-clipboard
     ghostty
-    libopenraw
-    tumbler
+
     btop
     cifs-utils
     eddie
-    file-roller
     obsidian
     mpv
     gimp
@@ -163,6 +163,7 @@
     python3
     python3Packages.python-lsp-server
     rustup
+    nixd
     gcc
 
     # Audio
@@ -170,16 +171,6 @@
     pamixer
     bluez
     bluez-tools
-
-    # Sway
-    swaybg
-    fuzzel
-    waybar
-    swaylock
-    slurp
-    mako
-    xwayland
-    xrandr
 
     # Application
     vesktop
@@ -191,19 +182,21 @@
 
     # 3D Printing
     prusa-slicer
+
+    # home manager backup
+    bat
+    steel
+    schemat
+    mitscheme
+    git
+    tig
+    rmpc
+
   ];
 
   # programs
-  programs.thunar = {
-    enable = true;
-  };
 
   programs.xfconf.enable = true;
-
-  programs.sway = {
-    enable = true;
-    wrapperFeatures.gtk = true;
-  };
 
   programs.firefox = {
     enable = true;
@@ -241,17 +234,6 @@
     };
   };
 
-  # Add the archive plugin and an archive manager backend (e.g., file-roller or ark)
-  programs.thunar.plugins = with pkgs; [
-    thunar-archive-plugin
-    thunar-volman
-  ];
-
-  # Services
-
-  services.tumbler.enable = true;
-  services.gvfs.enable = true;
-
   services.tailscale = {
     enable = true;
   };
@@ -266,21 +248,21 @@
     variant = "nodeadkeys";
   };
 
-  services.keyd = {
-    enable = true;
+  # services.keyd = {
+  #   enable = true;
 
-    keyboards = {
-      default = {
-        ids = [ "*" ];
+  #   keyboards = {
+  #     default = {
+  #       ids = [ "*" ];
 
-        settings = {
-          main = {
-            capslock = "overload(control, esc)";
-          };
-        };
-      };
-    };
-  };
+  #       settings = {
+  #         main = {
+  #           capslock = "overload(control, esc)";
+  #         };
+  #       };
+  #     };
+  #   };
+  # };
 
   services.udisks2.enable = true;
 
