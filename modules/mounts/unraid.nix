@@ -1,6 +1,10 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
+  environment.systemPackages = with pkgs; [
+    cifs-utils
+  ];
+
   # Samba mount
   fileSystems."/mnt/unraid" = {
     device = "//tower/data";

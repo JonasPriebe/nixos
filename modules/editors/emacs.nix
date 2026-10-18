@@ -31,14 +31,10 @@
         pkgs.pipenv
         pkgs.shfmt
         pkgs.shellcheck
+        pkgs.direnv
+        pkgs.nix-direnv
       ];
-
     })
-    pkgs.jdk25
-    pkgs.jdt-language-server
-    pkgs.nodejs
-    pkgs.ripgrep
-
   ];
 
   nixpkgs.overlays = [

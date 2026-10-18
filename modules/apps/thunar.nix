@@ -10,7 +10,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-
     file-roller
     libopenraw
     tumbler
@@ -23,7 +22,7 @@
   ];
 
   # Services
-
   services.tumbler.enable = true;
   services.gvfs.enable = true;
+  services.udisks2.enable = true;
 }

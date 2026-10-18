@@ -23,6 +23,7 @@
     mako
     xwayland
     xrandr
+    wl-clipboard
   ];
 
 }
