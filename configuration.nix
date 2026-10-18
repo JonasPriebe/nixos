@@ -1,5 +1,5 @@
 # Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
+# your system  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
@@ -8,53 +8,27 @@
   lib,
   ...
 }:
+let
+  modules = import ./modules { inherit lib; };
+in
 {
   imports = [
     <home-manager/nixos>
     ./hardware-configuration.nix
+    ./modules/apps/emacs.nix
     ./modules/wm/sway.nix
+    modules.apps.firefox
     ./modules/apps/thunar.nix
+    ./modules/apps/firefox.nix
+    ./mounts/unraid.nix
+    # ./hosts/desktop.nix
   ];
-  # Home manager
-  home-manager.useUserPackages = true;
-  home-manager.useGlobalPkgs = true;
-  home-manager.backupFileExtension = "backup";
-  home-manager.users.bob = import "/home/bob/nixos/home.nix";
-
-  # NixOS
-  nix.settings.auto-optimise-store = true;
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
+  #####################################
+  # This will be removed once the config has been fully modularized
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
   };
-
-  # Samba mount
-  fileSystems."/mnt/unraid" = {
-    device = "//tower/data";
-    fsType = "cifs";
-    options =
-      let
-        # this line prevents hanging on network split
-        automount_opts = "x-systemd.automount,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-
-      in
-      [
-        "${automount_opts},credentials=/etc/nixos/smb-secrets"
-        "nofail"
-      ];
-  };
-
-  # Docker
-  virtualisation = {
-    docker = {
-      enable = true;
-      daemon.settings = {
-        data-root = "/home/bob/.local/share/docker";
-      };
-    };
-  };
-
   # Bootloader.
   boot = {
     kernelParams = [
@@ -63,7 +37,7 @@
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 3;
+        configurationLimit = 10;
         extraEntries = {
           "windows.conf" = ''
             title Windows
@@ -83,13 +57,42 @@
   };
 
   systemd.services.NetworkManager-wait-online.enable = false;
+  #####################################
+  # Home manager
+  home-manager.useUserPackages = true;
+  home-manager.useGlobalPkgs = true;
+  home-manager.backupFileExtension = "backup";
+  home-manager.users.bob = import "/home/bob/nixos/home.nix";
 
-  # Set your time zone.
+  # NixOS
+  nix.settings = {
+    substituters = [ "https://nix-community.cachix.org" ];
+    trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
+    auto-optimise-store = true;
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
+  # Docker
+  virtualisation = {
+    docker = {
+      enable = true;
+      daemon.settings = {
+        data-root = "/home/bob/.local/share/docker";
+      };
+    };
+  };
+
+  # Set your time zone
   time = {
     timeZone = "Europe/Berlin";
   };
 
-  # Select internationalisation properties.
+  # Selecet internationalisation properties.
   i18n = {
     defaultLocale = "en_US.UTF-8";
     extraLocaleSettings = {
@@ -130,11 +133,6 @@
     };
   };
 
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -165,6 +163,7 @@
     rustup
     nixd
     gcc
+    jetbrains.idea
 
     # Audio
     pavucontrol
@@ -191,48 +190,13 @@
     git
     tig
     rmpc
-
+    direnv
+    nix-direnv
   ];
 
   # programs
 
   programs.xfconf.enable = true;
-
-  programs.firefox = {
-    enable = true;
-    policies = {
-      DisableTelemetry = true;
-      DisableFireFoxStudies = true;
-      EnableTrackingProtection = {
-        Value = true;
-        Locked = true;
-        Cryptomining = true;
-        Fingerprinting = true;
-      };
-      DisablePocket = true;
-      DisableFirefoxAccounts = true;
-      DisableAccounts = true;
-      OverrideFirstRunPage = "";
-      OverrideFirstPostUpdatePage = "";
-      DontCheckDefaultBrowser = true;
-      DisplayBookmarksToolbar = "always";
-      DisplayMenuBar = "default-off";
-      Searchbar = "unified";
-
-      ExtensionSettings = {
-        "uBlock0@raymondhill.net" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
-          installation_mode = "force_installed";
-        };
-      };
-      ExtensionSettings = {
-        "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
-          installation_mode = "normal_installed";
-        };
-      };
-    };
-  };
 
   services.tailscale = {
     enable = true;

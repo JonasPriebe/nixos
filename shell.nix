@@ -6,8 +6,9 @@ let
 in
 pkgs.mkShellNoCC {
   packages = with pkgs; [
-    cowsay
-    lolcat
+    nil
+    nixd
+    nixfmt
   ];
   GREETING = "Hello, Nix!";
 
