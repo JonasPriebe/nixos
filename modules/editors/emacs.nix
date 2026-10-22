@@ -6,7 +6,7 @@
 {
   environment.systemPackages = [
     (pkgs.emacsWithPackagesFromUsePackage {
-      package = pkgs.emacs-git-pgtk; # replace with pkgs.emacsPgtk, or another version if desired.
+      package = pkgs.emacs-pgtk; # replace with pkgs.emacsPgtk, or another version if desired.
       config = /home/bob/.doom.d/init.el;
       alwaysEnsure = true;
       extraEmacsPackages = epkgs: [

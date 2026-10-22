@@ -15,6 +15,11 @@ in
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ../../modules/editors/emacs.nix
+    ../../modules/system/hardware/laptop/integratedGraphics.nix
+    ../../modules/system/hardware/laptop/battery.nix
+    ../../modules/system/settings/capstoctrlescape.nix
+    ../../modules/apps/syncthing.nix
     (import "${home-manager}/nixos")
   ];
   environment.variables.NEWT_COLORS = "root=#FFFFFF,#000000 border=#FF00FF,#000000 window=#000000,#000000 shadow=#000000,#000000 title=#FF00FF,#000000 button=#000000,#FF00FF button_active=#000000,#FFFF00 actbutton=#FFFF00,#000000 compactbutton=#FFFF00,#000000 checkbox=#FF0000,#000000 entry=#00FF00,#000000 disentry=#000000,#000000 textbox=#00FF00,#000000 acttextbox=#FF00FF,#000000 label=#00FFFF,#000000 listbox=#00FF00,#000000 actlistbox=#FF00FF,#000000 sellistbox=#FF0000,#000000 actsellistbox=#000000,#FFFF00";
@@ -30,15 +35,7 @@ in
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
-  home-manager.users.bob = import "/home/bob/nixos/home.nix";
-
-  # NixOS
-  nix.settings.auto-optimise-store = true;
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
-  };
+  home-manager.users.bob = import "/home/bob/nixos/hosts/nixtop/home.nix";
 
   # Docker
   virtualisation.docker = {
@@ -127,6 +124,8 @@ in
     jellyfin-mpv-shim
     pandoc
     jellyfin-desktop
+    jetbrains.idea
+    jdk25
 
     # Helix Stuff
     helix
@@ -204,7 +203,7 @@ in
 
   services.blueman.enable = true;
   services.xserver.enable = false;
-  services.power-profiles-daemon.enable = true;
+  # services.power-profiles-daemon.enable = true;
   services.udisks2.enable = true;
 
   services.displayManager.ly = {
