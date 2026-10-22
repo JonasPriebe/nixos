@@ -25,6 +25,8 @@
         pkgs.age
         pkgs.ty
         pkgs.sbcl
+        epkgs.pdf-tools
+        epkgs.org-pdftools
         pkgs.csharpier
         pkgs.nixfmt
         pkgs.black
@@ -33,6 +35,7 @@
         pkgs.shellcheck
         pkgs.direnv
         pkgs.nix-direnv
+
       ];
     })
   ];

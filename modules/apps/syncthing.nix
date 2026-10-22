@@ -1,16 +1,14 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 
 {
-  services.syncthing = {
-    enable = true;
-    openDefaultPorts = true;
-    guiAddress = "0.0.0.0:8384";
 
-  };
+  services.syncthing ={
+    enable=true;
+    user="bob";
+    group="users";
+
+    configDir ="/home/bob/.config/syncthing";
+    dataDir = "/var/lib/syncthing";
+   };
 
 }

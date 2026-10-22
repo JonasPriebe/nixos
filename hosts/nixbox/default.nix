@@ -29,6 +29,7 @@
     modules.apps.packages
     modules.apps.thunar
     modules.apps.firefox
+    modules.apps.syncthing
 
     modules.mounts.unraid
 
