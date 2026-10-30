@@ -22,6 +22,7 @@
     modules.system.security
     modules.system.settings.nix
     modules.system.settings.locale
+    modules.system.hardware.bluetooth
 
     modules.services.ty
     modules.users.bob
@@ -30,6 +31,7 @@
     modules.apps.thunar
     modules.apps.firefox
     modules.apps.syncthing
+    modules.apps.steam
 
     modules.mounts.unraid
 

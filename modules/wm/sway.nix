@@ -3,6 +3,7 @@
 # to /etc/nixos/configuration.nix instead.
 {
   pkgs,
+  lib,
   ...
 }:
 
@@ -11,6 +12,29 @@
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
+      xdg-desktop-portal-gtk
+    ];
+    config.sway = {
+      default = lib.mkForce [
+        "wlr"
+        "gtk"
+      ];
+      "org.freedesktop.impl.portal.ScreenCast" = "wlr";
+      "org.freedesktop.impl.portal.Screenshot" = "wlr";
+      "org.freedesktop.impl.portal.FileChooser" = "gtk";
+    };
+
+    wlr.settings.screencast = {
+      chooser_type = "simple";
+      chooser_cmd = "${pkgs.slurp}/bin/slurp -f 'Monitor: %o' -or";
+    };
+
   };
 
   environment.systemPackages = with pkgs; [
@@ -24,6 +48,7 @@
     xwayland
     xrandr
     wl-clipboard
+
   ];
 
 }
