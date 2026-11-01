@@ -10,6 +10,7 @@ let
 in
 
 {
+  nixpkgs.config.allowUnfree = true;
   imports = [
     (import (./hosts + "/${host}") {
 

@@ -27,12 +27,21 @@
     modules.services.ty
     modules.users.bob
 
-    modules.apps.packages
     modules.apps.thunar
     modules.apps.firefox
     modules.apps.syncthing
     modules.apps.steam
+    modules.apps.jetbrains
+    modules.apps.mpv
 
+    modules.apps.gimp
+    modules.apps.prusaslicer
+    modules.apps.darktable
+    modules.apps.vesktop
+    modules.apps.bitwarden
+    modules.apps.signal
+
+    modules.terminal.ghostty
     modules.mounts.unraid
 
   ];

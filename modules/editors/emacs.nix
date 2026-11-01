@@ -35,7 +35,7 @@
         pkgs.shellcheck
         pkgs.direnv
         pkgs.nix-direnv
-
+        pkgs.pandoc
       ];
     })
   ];
