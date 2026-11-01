@@ -40,6 +40,7 @@
     modules.apps.vesktop
     modules.apps.bitwarden
     modules.apps.signal
+    modules.apps.tablet
 
     modules.terminal.ghostty
     modules.mounts.unraid
