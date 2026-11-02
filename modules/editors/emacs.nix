@@ -4,40 +4,41 @@
 
 }:
 {
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
     (pkgs.emacsWithPackagesFromUsePackage {
       package = pkgs.emacs-pgtk; # replace with pkgs.emacsPgtk, or another version if desired.
       config = /home/bob/.doom.d/init.el;
       alwaysEnsure = true;
       extraEmacsPackages = epkgs: [
         epkgs.use-package
-        pkgs.mu
+
         # (pkgs.ripgrep.override{pcre2=true;})
-        pkgs.ripgrep
-        pkgs.gnutls
-        pkgs.git
-        pkgs.fd
-        pkgs.imagemagick
-        pkgs.zstd
-        pkgs.sqlite
-        pkgs.clang-tools
-        pkgs.texliveMedium
-        pkgs.age
-        pkgs.ty
-        pkgs.sbcl
+
         epkgs.pdf-tools
         epkgs.org-pdftools
-        pkgs.csharpier
-        pkgs.nixfmt
-        pkgs.black
-        pkgs.pipenv
-        pkgs.shfmt
-        pkgs.shellcheck
-        pkgs.direnv
-        pkgs.nix-direnv
-        pkgs.pandoc
+
       ];
     })
+    mu
+    ripgrep
+    gnutls
+    git
+    fd
+    imagemagick
+    zstd
+    sqlite
+    clang-tools
+    texliveMedium
+    age
+    ty
+    sbcl
+    csharpier
+    nixfmt
+    black
+    pipenv
+    shfmt
+    shellcheck
+    pandoc
   ];
 
   nixpkgs.overlays = [

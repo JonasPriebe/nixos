@@ -11,6 +11,8 @@
     wget
     btop
     tig
+    direnv
+    nix-direnv
   ];
 
 }
