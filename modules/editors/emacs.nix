@@ -11,14 +11,13 @@
       alwaysEnsure = true;
       extraEmacsPackages = epkgs: [
         epkgs.use-package
-
         # (pkgs.ripgrep.override{pcre2=true;})
-
         epkgs.pdf-tools
         epkgs.org-pdftools
 
       ];
     })
+
     mu
     ripgrep
     gnutls
@@ -39,6 +38,7 @@
     shfmt
     shellcheck
     pandoc
+
   ];
 
   nixpkgs.overlays = [

@@ -20,6 +20,8 @@
     rustup
     nixd
     gcc
+    nil
+
   ];
 
 }

@@ -20,8 +20,11 @@ in
 
     modules.system.hardware.laptop.integratedGraphics
     modules.system.hardware.laptop.battery
-    modules.system.hardware.laptop.capstoctrlescape
+
+    modules.system.settings.locale
+    modules.system.settings.capstoctrlescape
     modules.apps.syncthing
+    modules.apps.tailscale
     modules.system.hardware.audio
     modules.system.hardware.bluetooth
     modules.system.hardware.lidswitch
@@ -36,14 +39,12 @@ in
 
     (import "${home-manager}/nixos")
   ];
-  environment.variables.NEWT_COLORS = "root=#FFFFFF,#000000 border=#FF00FF,#000000 window=#000000,#000000 shadow=#000000,#000000 title=#FF00FF,#000000 button=#000000,#FF00FF button_active=#000000,#FFFF00 actbutton=#FFFF00,#000000 compactbutton=#FFFF00,#000000 checkbox=#FF0000,#000000 entry=#00FF00,#000000 disentry=#000000,#000000 textbox=#00FF00,#000000 acttextbox=#FF00FF,#000000 label=#00FFFF,#000000 listbox=#00FF00,#000000 actlistbox=#FF00FF,#000000 sellistbox=#FF0000,#000000 actsellistbox=#000000,#FFFF00";
 
   # Home manager
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
-
-  home-manager.users.bob = import "/home/bob/nixos/home.nix";
+  home-manager.users.bob = import "/home/bob/nixos/hosts/nixtop/home.nix";
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -88,30 +89,6 @@ in
     jellyfin-desktop
     jetbrains.idea
     jdk25
-
-    # Helix Stuff
-    helix
-    nil
-    rust-analyzer
-    marksman
-    deno
-    lldb
-    clang-tools
-    python3
-    python3Packages.python-lsp-server
-    rustup
-    gcc
-
-    # Audio
-    pavucontrol
-    pamixer
-
-    # Sway
-    swaybg
-    fuzzel
-    waybar
-    swaylock
-    slurp
 
     # Application
     vesktop

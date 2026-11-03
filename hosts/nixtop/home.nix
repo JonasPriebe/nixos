@@ -169,7 +169,19 @@
     };
   };
 
+  services.mpd = {
+    enable = true;
+    musicDirectory = "/home/bob/music";
+    extraConfig = ''
+      audio_output {
+        type "pipewire"
+        name "PipeWire Sound Server"
+      }
+    '';
+  };
+
   home.packages = with pkgs; [
+    rmpc
     git
     tig
   ];
