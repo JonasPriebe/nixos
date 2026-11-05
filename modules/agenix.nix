@@ -1,4 +1,5 @@
 {
+  self,
   config,
   lib,
   pkgs,
@@ -6,21 +7,16 @@
 }:
 
 {
-  imports = [
-    "${builtins.fetchTarball "https://github.com/ryantm/agenix/archive/main.tar.gz"}/modules/age.nix"
-  ];
+  imports = [ self.inputs.agenix.nixosModules.default ];
 
   environment.systemPackages = [
-    (pkgs.callPackage
-      "${builtins.fetchTarball "https://github.com/ryantm/agenix/archive/main.tar.gz"}/pkgs/agenix.nix"
-      { }
-    )
+    self.inputs.agenix.packages.${pkgs.system}.default
   ];
 
   age = {
 
     identityPaths = [
-      /home/bob/.ssh/id_ed25519
+      "/home/bob/.ssh/id_ed25519"
     ];
     secrets.samba-creds = {
       file = ../modules/secrets/samba-creds.age;

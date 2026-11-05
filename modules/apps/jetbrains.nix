@@ -6,7 +6,6 @@
 }:
 
 {
-
   environment.systemPackages = with pkgs; [
     (jetbrains.idea.override {
       vmopts = ''

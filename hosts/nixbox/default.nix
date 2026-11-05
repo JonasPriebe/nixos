@@ -8,7 +8,7 @@
 
 {
   imports = [
-    <home-manager/nixos>
+    # <home-manager/nixos>
     ./hardware-configuration.nix
 
     modules.wm.sway
@@ -76,11 +76,12 @@
   console.keyMap = "us";
 
   programs.xfconf.enable = true;
-  # Home manager
-  home-manager.useUserPackages = true;
-  home-manager.useGlobalPkgs = true;
-  home-manager.backupFileExtension = "backup";
-  home-manager.users.bob = import "/home/bob/nixos/home.nix";
+  nixpkgs.config.allowUnfree = true;
+  # # Home manager
+  # home-manager.useUserPackages = true;
+  # home-manager.useGlobalPkgs = true;
+  # home-manager.backupFileExtension = "backup";
+  # home-manager.users.bob = import "/home/bob/nixos/home.nix";
 
   # services.keyd = {
   #   enable = true;
