@@ -22,21 +22,5 @@ in
     })
   ];
 
-  # services.keyd = {
-  #   enable = true;
-
-  #   keyboards = {
-  #     default = {
-  #       ids = [ "*" ];
-
-  #       settings = {
-  #         main = {
-  #           capslock = "overload(control, esc)";
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
-
-  system.stateVersion = "26.05"; # Did you read the comment?
+  system.stateVersion = "26.05";
 }
