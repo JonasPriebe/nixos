@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -16,7 +16,7 @@
 
       in
       [
-        "${automount_opts},credentials=/etc/nixos/smb-secrets"
+        "${automount_opts},credentials=${config.age.secrets.samba-creds.path}"
         "nofail"
       ];
   };

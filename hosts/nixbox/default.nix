@@ -42,6 +42,7 @@
     modules.apps.signal
     modules.apps.tablet
 
+    modules.agenix
     modules.terminal.ghostty
     modules.mounts.unraid
 
