@@ -16,7 +16,7 @@
   age = {
 
     identityPaths = [
-      /home/bob/.ssh/id_ed25519
+      "/home/bob/.ssh/id_ed25519"
     ];
     secrets.samba-creds = {
       file = ../modules/secrets/samba-creds.age;

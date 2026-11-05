@@ -23,12 +23,24 @@
       self,
       nixpkgs,
       nixpkgs-unstable,
+      ...
     }:
     let
       mkHost =
         hostname:
-        nixpkgs.lib.nixosSystem {
+        let
           system = "x86_64-linux";
+          lib = nixpkgs.lib;
+
+        in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+
+          specialArgs = {
+            inherit self;
+            modules = import ./modules { inherit lib; };
+          };
+
           modules = [
             {
               nixpkgs.overlays = [
@@ -40,7 +52,8 @@
                 })
               ];
             }
-            ./hosts/${hostname}/configuration.nix
+
+            ./hosts/${hostname}/default.nix
             {
               networking.hostName = hostname;
             }
