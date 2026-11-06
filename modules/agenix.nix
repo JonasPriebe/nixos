@@ -3,6 +3,7 @@
   config,
   lib,
   pkgs,
+  homeDir,
   ...
 }:
 
@@ -10,13 +11,13 @@
   imports = [ self.inputs.agenix.nixosModules.default ];
 
   environment.systemPackages = [
-    self.inputs.agenix.packages.${pkgs.system}.default
+    self.inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   age = {
 
     identityPaths = [
-      "/home/bob/.ssh/id_ed25519"
+      "${homeDir}/.ssh/id_ed25519"
     ];
     secrets.samba-creds = {
       file = ../modules/secrets/samba-creds.age;

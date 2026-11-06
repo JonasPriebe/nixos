@@ -2,18 +2,25 @@
   self,
   pkgs,
   config,
+  inputs,
   ...
 
 }:
 let
-  emacs = self.inputs.emacs-overlay.packages.emacs-git-pgtk.pkgs.withPackages (
-    epkgs: with epkgs; [
-      pdf.tools
-      org-pdftools
-    ]
+  emacs = (
+    pkgs.emacs-pgtk.pkgs.withPackages (
+      epkgs: with epkgs; [
+        pdf-tools
+        org-pdftools
+      ]
+    )
   );
 in
 {
+  nixpkgs.overlays = [
+    inputs.emacs-overlay.overlays.default
+  ];
+
   environment.systemPackages = with pkgs; [
     # (pkgs.emacsWithPackagesFromUsePackage {
     #   package = pkgs.emacs-pgtk; # replace with pkgs.emacsPgtk, or another version if desired.
@@ -27,7 +34,7 @@ in
 
     #   ];
     # })
-
+    emacs
     mu
     ripgrep
     gnutls
