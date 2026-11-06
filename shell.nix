@@ -10,6 +10,4 @@ pkgs.mkShellNoCC {
     nixd
     nixfmt
   ];
-  GREETING = "Hello, Nix!";
-
 }

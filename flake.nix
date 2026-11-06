@@ -36,11 +36,11 @@
           users = {
             nixbox = "bob";
             nixtop = "bob";
+            vps = "euklyd";
           };
 
           username = users.${hostname};
           homeDir = "/home/${username}";
-
         in
         nixpkgs.lib.nixosSystem {
           inherit system;
@@ -50,8 +50,16 @@
             modules = import ./modules { inherit lib; };
           };
 
-          modules = [
+          module = [
             {
+              nixpkgs.config.allowUnfreePredicate =
+                pkg:
+                builtins.elem (lib.getName pkg) [
+                  "idea"
+                  "steam"
+                  "steam-unwrapped"
+                ];
+
               nixpkgs.overlays = [
                 (final: prev: {
                   unstable = import nixpkgs-unstable {
@@ -61,7 +69,6 @@
                 })
               ];
             }
-
             ./hosts/${hostname}/default.nix
             {
               networking.hostName = hostname;
@@ -73,7 +80,6 @@
       nixosConfigurations = {
         nixbox = mkHost "nixbox";
         nixtop = mkHost "nixtop";
-
       };
     };
 }

@@ -1,14 +1,10 @@
 {
-  config,
-  lib,
-  pkgs,
   modules,
   ...
 }:
 
 {
   imports = [
-    # <home-manager/nixos>
     ./hardware-configuration.nix
 
     modules.wm.sway
@@ -75,29 +71,5 @@
   systemd.services.NetworkManager-wait-online.enable = false;
   console.keyMap = "us";
 
-  programs.xfconf.enable = true;
-  nixpkgs.config.allowUnfree = true;
-  # # Home manager
-  # home-manager.useUserPackages = true;
-  # home-manager.useGlobalPkgs = true;
-  # home-manager.backupFileExtension = "backup";
-  # home-manager.users.bob = import "/home/bob/nixos/home.nix";
-
-  # services.keyd = {
-  #   enable = true;
-
-  #   keyboards = {
-  #     default = {
-  #       ids = [ "*" ];
-
-  #       settings = {
-  #         main = {
-  #           capslock = "overload(control, esc)";
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
-
-  system.stateVersion = "26.05"; # Did you read the comment?
+  system.stateVersion = "26.05";
 }

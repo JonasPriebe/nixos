@@ -2,17 +2,15 @@
   config,
   pkgs,
   lib,
+  hostname,
   ...
 }:
 let
-  host = builtins.replaceStrings [ "\n" ] [ "" ] (builtins.readFile /etc/hostname);
   modules = import ./modules { inherit lib; };
 in
-
 {
-  nixpkgs.config.allowUnfree = true;
   imports = [
-    (import (./hosts + "/${host}") {
+    (import (./hosts + "/${hostname}") {
 
       inherit modules;
       inherit pkgs;

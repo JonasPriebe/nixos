@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 {
   config,
   pkgs,
@@ -54,6 +50,7 @@ in
     (import "${home-manager}/nixos")
   ];
 
+  # home manager will also be removed here soon
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
@@ -72,12 +69,6 @@ in
   };
 
   console.keyMap = "de-latin1-nodeadkeys";
-
-  environment.systemPackages = with pkgs; [
-    cifs-utils
-    eddie
-
-  ];
 
   system.stateVersion = "26.05";
 }
