@@ -80,6 +80,7 @@
       nixosConfigurations = {
         nixbox = mkHost "nixbox";
         nixtop = mkHost "nixtop";
+        vps = mkHost "euklyd";
       };
     };
 }
