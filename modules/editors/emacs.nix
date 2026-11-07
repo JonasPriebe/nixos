@@ -22,18 +22,6 @@ in
   ];
 
   environment.systemPackages = with pkgs; [
-    # (pkgs.emacsWithPackagesFromUsePackage {
-    #   package = pkgs.emacs-pgtk; # replace with pkgs.emacsPgtk, or another version if desired.
-    #   config = /home/bob/.doom.d/init.el;
-    #   alwaysEnsure = true;
-    #   extraEmacsPackages = epkgs: [
-    #     epkgs.use-package
-    #     # (pkgs.ripgrep.override{pcre2=true;})
-    #     epkgs.pdf-tools
-    #     epkgs.org-pdftools
-
-    #   ];
-    # })
     emacs
     mu
     ripgrep
