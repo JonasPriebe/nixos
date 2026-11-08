@@ -10,7 +10,7 @@
     enable = true;
 
     settings = {
-      PermitRootLogiin = "no";
+      PermitRootLogin = "no";
       PasswordAuthentication = false;
       AllowUsers = [ "euklyd" ];
     };
