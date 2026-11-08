@@ -21,7 +21,7 @@
   ];
 
   # Bootloader.
-  boot.loader.grub = true;
+  boot.loader.grub.enable = true;
 
   networking = {
     hostName = "euklyd";

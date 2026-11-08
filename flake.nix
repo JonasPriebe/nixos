@@ -36,7 +36,7 @@
           users = {
             nixbox = "bob";
             nixtop = "bob";
-            vps = "euklyd";
+            euklyd = "euklyd";
           };
 
           username = users.${hostname};
@@ -50,7 +50,7 @@
             modules = import ./modules { inherit lib; };
           };
 
-          module = [
+          modules = [
             {
               nixpkgs.config.allowUnfreePredicate =
                 pkg:
@@ -80,7 +80,7 @@
       nixosConfigurations = {
         nixbox = mkHost "nixbox";
         nixtop = mkHost "nixtop";
-        vps = mkHost "euklyd";
+        euklyd = mkHost "euklyd";
       };
     };
 }
