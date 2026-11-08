@@ -20,13 +20,12 @@
     modules.agenix
   ];
 
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot";
-    };
+  boot.loader.grub = {
+    enable = true;
+    device = "/dev/vda";
   };
+
+  boot.loader.systemd-boot.enable = false;
 
   networking = {
     hostName = "euklyd";
