@@ -24,7 +24,7 @@
 
   boot.loader.grub = {
     enable = true;
-    device = "/dev/vda";
+    device = "/dev/sda";
   };
 
   boot.loader.systemd-boot.enable = false;
