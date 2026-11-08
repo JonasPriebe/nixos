@@ -7,7 +7,7 @@
 
 {
   # this is the user for my server instances
-  users.users.vps = {
+  users.users.euklyd = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
   };
