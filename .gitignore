@@ -2,5 +2,3 @@
 .idea
 *.log
 tmp/
-
-hosts/euklyd/hardware-configuration.nix
