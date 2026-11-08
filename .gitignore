@@ -3,4 +3,4 @@
 *.log
 tmp/
 
-./hosts/euklyd/hardware-configuration.nix
+hosts/euklyd/hardware-configuration.nix
