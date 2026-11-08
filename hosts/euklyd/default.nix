@@ -20,8 +20,13 @@
     modules.agenix
   ];
 
-  # Bootloader.
-  boot.loader.grub.enable = true;
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot";
+    };
+  };
 
   networking = {
     hostName = "euklyd";
