@@ -16,6 +16,8 @@
     modules.users.euklyd
 
     modules.apps.syncthing
+    modules.terminal.base
+
     modules.services.ssh
     modules.agenix
   ];
