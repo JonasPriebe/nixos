@@ -12,7 +12,7 @@
     extraGroups = [ "wheel" ];
   };
 
-  Nix.settings.trusted-users = [
+  nix.settings.trusted-users = [
     "euklyd"
   ];
 }
