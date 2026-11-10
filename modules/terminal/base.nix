@@ -2,12 +2,16 @@
   config,
   lib,
   pkgs,
+  modules,
   ...
 }:
 
 {
+  imports = [
+    modules.terminal.git
+  ];
+
   environment.systemPackages = with pkgs; [
-    git
     wget
     btop
     tig
