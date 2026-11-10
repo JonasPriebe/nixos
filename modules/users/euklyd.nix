@@ -11,4 +11,8 @@
     isNormalUser = true;
     extraGroups = [ "wheel" ];
   };
+
+  Nix.settings.trusted-users = [
+    "euklyd"
+  ];
 }
