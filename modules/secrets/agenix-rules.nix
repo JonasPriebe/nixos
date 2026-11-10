@@ -15,5 +15,4 @@ in
     nixbox
   ];
   "samba-creds.age".publicKeys = users;
-
 }
