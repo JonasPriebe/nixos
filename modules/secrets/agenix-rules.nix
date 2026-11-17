@@ -15,4 +15,35 @@ in
     nixbox
   ];
   "samba-creds.age".publicKeys = users;
+
+  "postgres-creds.age".publicKeys = [
+    nixbox
+    nixtop
+    vps
+  ];
+
+  "cert-creds.age".publicKeys = [
+    nixbox
+    vps
+  ];
+
+  "seed-client.age".publicKeys = [
+    nixbox
+    vps
+  ];
+
+  "cert-ms.age".publicKeys = [
+    nixbox
+    vps
+  ];
+
+  "cert-enc.age".publicKeys = [
+    nixbox
+    vps
+  ];
+
+  "cert-enc-creds.age".publicKeys = [
+    nixbox
+    vps
+  ];
 }

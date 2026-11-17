@@ -41,7 +41,6 @@
     modules.agenix
     modules.terminal.ghostty
     modules.mounts.unraid
-
   ];
 
   # Bootloader.
@@ -67,6 +66,20 @@
       enable = true;
     };
   };
+  services.resolved = {
+    enable = true;
+    settings.Resolve = {
+      DNSSEC = "allow-downgrade";
+      DNSOverTLS = "opportunistic";
+    };
+  };
+
+  # only if NetworkManager manages the connection
+  networking.networkmanager.dns = "systemd-resolved";
+  networking.networkmanager.insertNameservers = [
+    "1.1.1.1"
+    "9.9.9.9"
+  ];
 
   systemd.services.NetworkManager-wait-online.enable = false;
   console.keyMap = "us";

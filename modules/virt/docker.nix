@@ -17,8 +17,6 @@
     MACHINE_STORAGE_PATH = "${homeDir}/docker/machine";
   };
 
-  user.extraGroups = [ "docker" ];
-
   virtualisation = {
     docker = {
       enable = true;

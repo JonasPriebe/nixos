@@ -8,7 +8,10 @@
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
+
   };
+  #include my git submodule
+  inputs.self.submodules = true;
 
   nixConfig = {
     extra-substituters = [

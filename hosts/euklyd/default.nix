@@ -19,6 +19,8 @@
 
     modules.services.ssh
     modules.agenix
+
+    modules.services.ms
   ];
 
   boot.loader.grub = {
