@@ -12,7 +12,6 @@
   };
   #include my git submodule
   inputs.self.submodules = true;
-
   nixConfig = {
     extra-substituters = [
       "https://nix-community.cachix.org" # emacs-community-overlay
